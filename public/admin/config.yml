@@ -2,7 +2,7 @@ backend:
   name: github
   repo: cangshudiudiu/TYPC-site
   branch: main
-  base_url: https://api.netlify.com
+  base_url: https://your-cms-oauth-worker.example.com
   auth_endpoint: auth
   use_graphql: true
   open_authoring: true
