@@ -37,7 +37,7 @@ Use Cloudflare Pages:
 
 - Build command: `npm run build`
 - Output directory: `dist`
-- Node.js version: `20` or newer
+- Node.js version: `22` or newer
 
 ## Admin CMS
 
