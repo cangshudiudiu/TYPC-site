@@ -64,6 +64,17 @@ Decap CMS 的 GitHub 后台需要 OAuth 登录服务。官方说明里提到，G
 3. 把 OAuth proxy 地址填入 `public/admin/config.yml` 的 `backend.base_url`
 4. 重新部署网站
 
+后台配置中的 `auth_endpoint` 应保持为 `/auth`。`base_url` 不能使用占位地址，必须替换成实际 OAuth Worker 地址，例如：
+
+```yml
+backend:
+  name: github
+  repo: cangshudiudiu/TYPC-site
+  branch: main
+  base_url: https://decap-oauth.example.workers.dev
+  auth_endpoint: /auth
+```
+
 ## 投稿系统计划
 
 建议分两期做：
