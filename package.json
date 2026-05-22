@@ -5,13 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "preview": "npm run build && wrangler dev",
+    "build": "astro build && node scripts/create-worker-entry.mjs",
+    "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
     "cf-typegen": "wrangler types"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "12",
     "@astrojs/sitemap": "^3.3.1",
     "astro": "^5.8.0"
   },
