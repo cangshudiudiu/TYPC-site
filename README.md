@@ -38,3 +38,12 @@ Use Cloudflare Pages:
 - Build command: `npm run build`
 - Output directory: `dist`
 - Node.js version: `20` or newer
+
+## Admin CMS
+
+The admin page lives at `/admin/` and uses Decap CMS.
+
+Before it can save changes on the live site, configure GitHub OAuth for the
+repository and set the CMS backend OAuth endpoint in `public/admin/config.yml`.
+The content edited in the CMS is committed back to GitHub, then Cloudflare
+rebuilds the site automatically.

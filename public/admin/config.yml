@@ -1,0 +1,104 @@
+backend:
+  name: github
+  repo: cangshudiudiu/TYPC-site
+  branch: main
+  base_url: https://api.netlify.com
+  auth_endpoint: auth
+  use_graphql: true
+  open_authoring: true
+
+local_backend: true
+publish_mode: editorial_workflow
+media_folder: "public/uploads"
+public_folder: "/uploads"
+
+slug:
+  encoding: "ascii"
+  clean_accents: true
+  sanitize_replacement: "-"
+
+collections:
+  - name: "blog"
+    label: "博客"
+    label_singular: "博客文章"
+    folder: "src/content/blog"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    preview_path: "blog/{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }
+
+  - name: "essays"
+    label: "随笔"
+    label_singular: "随笔"
+    folder: "src/content/essays"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    preview_path: "essays/{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }
+
+  - name: "resources"
+    label: "资料"
+    label_singular: "资料"
+    folder: "src/content/resources"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    preview_path: "resources/{{slug}}"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "正文", name: "body", widget: "markdown" }
+
+  - name: "bookmarks"
+    label: "收藏"
+    label_singular: "收藏链接"
+    folder: "src/content/bookmarks"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
+      - { label: "外部链接", name: "externalUrl", widget: "string", required: false }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "备注", name: "body", widget: "markdown", required: false }
+
+  - name: "downloads"
+    label: "下载"
+    label_singular: "下载项"
+    folder: "src/content/downloads"
+    create: true
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    extension: "md"
+    format: "frontmatter"
+    fields:
+      - { label: "标题", name: "title", widget: "string" }
+      - { label: "摘要", name: "description", widget: "text" }
+      - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
+      - { label: "下载文件", name: "fileUrl", widget: "file", required: false }
+      - { label: "标签", name: "tags", widget: "list", required: false }
+      - { label: "说明", name: "body", widget: "markdown", required: false }
