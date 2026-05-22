@@ -1,0 +1,59 @@
+---
+import "../styles/global.css";
+
+type Props = {
+  title?: string;
+  description?: string;
+};
+
+const {
+  title = "cangshuzhijia",
+  description = "A personal homepage, bilingual blog, notes, resources, bookmarks, and downloads."
+} = Astro.props;
+
+const nav = [
+  { href: "/blog/", label: "博客" },
+  { href: "/essays/", label: "随笔" },
+  { href: "/resources/", label: "资料" },
+  { href: "/bookmarks/", label: "收藏" },
+  { href: "/downloads/", label: "下载" }
+];
+
+const currentPath = Astro.url.pathname;
+---
+
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>{title === "cangshuzhijia" ? title : `${title} | cangshuzhijia`}</title>
+  </head>
+  <body>
+    <div class="site-shell">
+      <header class="site-header">
+        <nav class="nav" aria-label="Primary navigation">
+          <a class="brand" href="/">cangshuzhijia</a>
+          <div class="nav-links">
+            {nav.map((item) => (
+              <a href={item.href} aria-current={currentPath.startsWith(item.href) ? "page" : undefined}>
+                {item.label}
+              </a>
+            ))}
+          </div>
+        </nav>
+      </header>
+      <main class="main">
+        <slot />
+      </main>
+      <footer class="footer">
+        <div class="footer-inner">
+          <span>© {new Date().getFullYear()} cangshuzhijia</span>
+          <span>Built with Astro. Content in Markdown.</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>

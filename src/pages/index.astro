@@ -1,0 +1,57 @@
+---
+import EntryCard from "@/components/EntryCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { latestEntries } from "@/lib/content";
+
+const sections = [
+  { href: "/blog/", title: "博客", text: "较完整的文章、观点和技术整理。" },
+  { href: "/essays/", title: "随笔", text: "短想法、观察、记录和日常片段。" },
+  { href: "/resources/", title: "资料", text: "文档索引、教程、研究材料和知识库入口。" },
+  { href: "/bookmarks/", title: "收藏", text: "值得长期保留的链接、工具和阅读清单。" },
+  { href: "/downloads/", title: "下载", text: "可直接获取的文件、模板、PDF 和资料包。" }
+];
+---
+
+<BaseLayout>
+  <section class="container hero">
+    <div>
+      <p class="eyebrow">Personal homepage and archive</p>
+      <h1>cangshuzhijia</h1>
+      <p class="lead">
+        一个简洁的个人主页，用来发布中文和英文文章、随笔、资料索引、收藏链接与下载文件。
+      </p>
+    </div>
+    <p class="hero-note">
+      Write in Markdown. Publish through GitHub. Deploy on Cloudflare Pages.
+    </p>
+  </section>
+
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <h2>栏目</h2>
+        <p>第一版保持轻量，内容结构清楚，后续可以继续加搜索、标签页、RSS 和评论。</p>
+      </div>
+    </div>
+    <div class="grid">
+      {sections.map((section) => (
+        <article class="card">
+          <h3><a href={section.href}>{section.title}</a></h3>
+          <p>{section.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <h2>最新更新</h2>
+        <p>所有栏目内容都会按时间自动汇总到这里。</p>
+      </div>
+    </div>
+    <div class="grid">
+      {latestEntries.map((entry) => <EntryCard entry={entry} />)}
+    </div>
+  </section>
+</BaseLayout>

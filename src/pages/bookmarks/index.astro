@@ -1,0 +1,25 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { bookmarks } from "@/lib/content";
+---
+
+<BaseLayout title="收藏" description="Bookmarks from cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Bookmarks</p>
+        <h1>收藏</h1>
+        <p>值得长期保留的链接、工具和阅读清单。</p>
+      </div>
+    </div>
+    <div class="list">
+      {bookmarks.map((item) => (
+        <article class="list-item">
+          <div class="meta">{item.date} · {(item.language ?? "zh").toUpperCase()}</div>
+          <h2><a href={item.url}>{item.title}</a></h2>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

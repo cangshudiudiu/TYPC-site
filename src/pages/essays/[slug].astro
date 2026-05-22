@@ -1,0 +1,28 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const essays = import.meta.glob("../../content/essays/*.md", { eager: true });
+  return Object.entries(essays).map(([path, essay]) => ({
+    params: { slug: path.split("/").pop()?.replace(/\.md$/, "") },
+    props: { essay }
+  }));
+}
+
+const { essay } = Astro.props;
+const { Content, frontmatter } = essay;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <article class="article">
+    <header>
+      <p class="eyebrow">随笔</p>
+      <h1>{frontmatter.title}</h1>
+      <p class="lead">{frontmatter.description}</p>
+      <p class="meta">{frontmatter.date} · {(frontmatter.language ?? "zh").toUpperCase()}</p>
+    </header>
+    <div class="article-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>

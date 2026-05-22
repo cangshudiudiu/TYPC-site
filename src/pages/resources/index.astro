@@ -1,0 +1,25 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { resources } from "@/lib/content";
+---
+
+<BaseLayout title="资料" description="Resources from cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Resources</p>
+        <h1>资料</h1>
+        <p>文档索引、教程、研究材料和知识库入口。</p>
+      </div>
+    </div>
+    <div class="list">
+      {resources.map((item) => (
+        <article class="list-item">
+          <div class="meta">{item.date} · {(item.language ?? "zh").toUpperCase()}</div>
+          <h2><a href={item.url}>{item.title}</a></h2>
+          <p>{item.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

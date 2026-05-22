@@ -1,0 +1,20 @@
+---
+import type { Entry } from "@/lib/content";
+
+type Props = {
+  entry: Entry;
+};
+
+const { entry } = Astro.props;
+---
+
+<article class="card">
+  <div class="meta">{entry.date} · {(entry.language ?? "zh").toUpperCase()}</div>
+  <h3><a href={entry.url}>{entry.title}</a></h3>
+  <p>{entry.description}</p>
+  {entry.tags?.length ? (
+    <div class="tags">
+      {entry.tags.map((tag) => <span class="tag">{tag}</span>)}
+    </div>
+  ) : null}
+</article>

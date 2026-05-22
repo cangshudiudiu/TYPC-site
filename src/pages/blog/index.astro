@@ -1,0 +1,25 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { blogPosts } from "@/lib/content";
+---
+
+<BaseLayout title="博客" description="Blog posts from cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Blog</p>
+        <h1>博客</h1>
+        <p>较完整的文章、观点和技术整理。</p>
+      </div>
+    </div>
+    <div class="list">
+      {blogPosts.map((post) => (
+        <article class="list-item">
+          <div class="meta">{post.date} · {(post.language ?? "zh").toUpperCase()}</div>
+          <h2><a href={post.url}>{post.title}</a></h2>
+          <p>{post.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

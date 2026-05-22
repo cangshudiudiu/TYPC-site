@@ -1,0 +1,28 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = import.meta.glob("../../content/blog/*.md", { eager: true });
+  return Object.entries(posts).map(([path, post]) => ({
+    params: { slug: path.split("/").pop()?.replace(/\.md$/, "") },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content, frontmatter } = post;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <article class="article">
+    <header>
+      <p class="eyebrow">博客</p>
+      <h1>{frontmatter.title}</h1>
+      <p class="lead">{frontmatter.description}</p>
+      <p class="meta">{frontmatter.date} · {(frontmatter.language ?? "zh").toUpperCase()}</p>
+    </header>
+    <div class="article-content">
+      <Content />
+    </div>
+  </article>
+</BaseLayout>
