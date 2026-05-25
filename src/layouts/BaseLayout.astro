@@ -16,7 +16,8 @@ const nav = [
   { href: "/essays/", label: "随笔" },
   { href: "/resources/", label: "资料" },
   { href: "/bookmarks/", label: "收藏" },
-  { href: "/downloads/", label: "下载" }
+  { href: "/downloads/", label: "下载" },
+  { href: "/submit/", label: "投稿" }
 ];
 
 const currentPath = Astro.url.pathname;
@@ -51,7 +52,7 @@ const currentPath = Astro.url.pathname;
       <footer class="footer">
         <div class="footer-inner">
           <span>© {new Date().getFullYear()} cangshuzhijia</span>
-          <span>Built with Astro. Content in Markdown.</span>
+          <span><a href="/admin/">Admin</a> · Built with Astro. Content in Markdown.</span>
         </div>
       </footer>
     </div>

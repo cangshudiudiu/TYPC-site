@@ -1,0 +1,30 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="投稿" description="Submit writing or resources to cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Submit</p>
+        <h1>投稿</h1>
+        <p>投稿系统会分阶段开放。当前网站已经具备 Markdown 内容结构，下一步会接入 GitHub 登录和审核流程。</p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card">
+        <h3>当前阶段</h3>
+        <p>站长通过本地 Markdown 或后台测试模式维护内容。内容保存到 GitHub 后，Cloudflare 自动更新网站。</p>
+      </article>
+      <article class="card">
+        <h3>下一阶段</h3>
+        <p>接入 GitHub OAuth 后，站长可以通过网页后台发布博客、随笔、资料、收藏和下载项。</p>
+      </article>
+      <article class="card">
+        <h3>审核阶段</h3>
+        <p>开放投稿后，外部投稿会先进入审核，不会直接公开。审核通过后再发布到网站。</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>
