@@ -3,21 +3,29 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 import { essays } from "@/lib/content";
 ---
 
-<BaseLayout title="随笔" description="Essays and notes from cangshuzhijia.">
+<BaseLayout title="随笔动态" description="Moments and notes from cangshuzhijia.">
   <section class="container">
     <div class="section-head">
       <div>
-        <p class="eyebrow">Essays</p>
-        <h1>随笔</h1>
-        <p>短想法、观察、记录和日常片段。</p>
+        <p class="eyebrow">Moments</p>
+        <h1>随笔动态</h1>
+        <p>这里先作为空间动态墙使用，放短想法、观察、记录和日常片段。</p>
       </div>
     </div>
-    <div class="list">
+    <div class="timeline">
       {essays.map((essay) => (
-        <article class="list-item">
-          <div class="meta">{essay.date} · {(essay.language ?? "zh").toUpperCase()}</div>
-          <h2><a href={essay.url}>{essay.title}</a></h2>
-          <p>{essay.description}</p>
+        <article class="moment">
+          <div class="moment-dot" aria-hidden="true"></div>
+          <div>
+            <div class="meta">{essay.date} · {(essay.language ?? "zh").toUpperCase()}</div>
+            <h2><a href={essay.url}>{essay.title}</a></h2>
+            <p>{essay.description}</p>
+            {essay.tags?.length ? (
+              <div class="tags">
+                {essay.tags.map((tag) => <a class="tag" href={`/tags/#${encodeURIComponent(tag)}`}>{tag}</a>)}
+              </div>
+            ) : null}
+          </div>
         </article>
       ))}
     </div>

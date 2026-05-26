@@ -1,0 +1,26 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="留言" description="Guestbook for cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Guestbook</p>
+        <h1>留言</h1>
+        <p>第一版留言板先作为说明页上线，后续再接入真实留言提交和后台审核。</p>
+      </div>
+    </div>
+    <div class="guestbook">
+      <article class="notice">
+        <h2>可以先这样留言</h2>
+        <p>如果想交流文章、资料、链接或投稿，可以先通过投稿页说明的方式联系。正式留言系统会优先支持审核后展示，避免垃圾内容直接公开。</p>
+        <a class="button-link" href="/submit/">查看投稿说明</a>
+      </article>
+      <article class="notice">
+        <h2>后续会开放</h2>
+        <p>计划增加网页留言表单、后台审核队列、精选留言和按文章关联评论。第一版先保持静态，确保网站和后台发文稳定。</p>
+      </article>
+    </div>
+  </section>
+</BaseLayout>

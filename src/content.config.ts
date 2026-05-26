@@ -4,9 +4,12 @@ const schema = z.object({
   title: z.string(),
   description: z.string(),
   date: z.string(),
+  status: z.enum(["published", "archived"]).default("published"),
+  featured: z.boolean().default(false),
+  cover: z.string().optional(),
   language: z.enum(["zh", "en"]).default("zh"),
   tags: z.array(z.string()).default([]),
-  externalUrl: z.string().url().optional(),
+  externalUrl: z.string().optional(),
   fileUrl: z.string().optional()
 });
 

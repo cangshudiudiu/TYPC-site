@@ -3,7 +3,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const posts = import.meta.glob("../../content/blog/*.md", { eager: true });
-  return Object.entries(posts).map(([path, post]) => ({
+  return Object.entries(posts).filter(([, post]) => (post as any).frontmatter.status !== "archived").map(([path, post]) => ({
     params: { slug: path.split("/").pop()?.replace(/\.md$/, "") },
     props: { post }
   }));

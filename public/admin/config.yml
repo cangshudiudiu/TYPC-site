@@ -1,7 +1,9 @@
 backend:
-  name: test-repo
+  name: github
   repo: cangshudiudiu/TYPC-site
   branch: main
+  base_url: https://decap-oauth.uquk202268.workers.dev
+  auth_endpoint: /auth
   use_graphql: true
   open_authoring: true
 
@@ -21,6 +23,7 @@ collections:
     label_singular: "博客文章"
     folder: "src/content/blog"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     extension: "md"
     format: "frontmatter"
@@ -29,15 +32,19 @@ collections:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "摘要", name: "description", widget: "text" }
       - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "状态", name: "status", widget: "select", options: [{ label: "发布", value: "published" }, { label: "归档隐藏", value: "archived" }], default: "published" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
       - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
       - { label: "标签", name: "tags", widget: "list", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
 
   - name: "essays"
-    label: "随笔"
-    label_singular: "随笔"
+    label: "随笔动态"
+    label_singular: "动态"
     folder: "src/content/essays"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     extension: "md"
     format: "frontmatter"
@@ -46,6 +53,9 @@ collections:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "摘要", name: "description", widget: "text" }
       - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "状态", name: "status", widget: "select", options: [{ label: "发布", value: "published" }, { label: "归档隐藏", value: "archived" }], default: "published" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
       - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
       - { label: "标签", name: "tags", widget: "list", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
@@ -55,6 +65,7 @@ collections:
     label_singular: "资料"
     folder: "src/content/resources"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     extension: "md"
     format: "frontmatter"
@@ -63,6 +74,9 @@ collections:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "摘要", name: "description", widget: "text" }
       - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "状态", name: "status", widget: "select", options: [{ label: "发布", value: "published" }, { label: "归档隐藏", value: "archived" }], default: "published" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
       - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
       - { label: "标签", name: "tags", widget: "list", required: false }
       - { label: "正文", name: "body", widget: "markdown" }
@@ -72,6 +86,7 @@ collections:
     label_singular: "收藏链接"
     folder: "src/content/bookmarks"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     extension: "md"
     format: "frontmatter"
@@ -79,6 +94,9 @@ collections:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "摘要", name: "description", widget: "text" }
       - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "状态", name: "status", widget: "select", options: [{ label: "发布", value: "published" }, { label: "归档隐藏", value: "archived" }], default: "published" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
       - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
       - { label: "外部链接", name: "externalUrl", widget: "string", required: false }
       - { label: "标签", name: "tags", widget: "list", required: false }
@@ -89,6 +107,7 @@ collections:
     label_singular: "下载项"
     folder: "src/content/downloads"
     create: true
+    delete: false
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     extension: "md"
     format: "frontmatter"
@@ -96,6 +115,9 @@ collections:
       - { label: "标题", name: "title", widget: "string" }
       - { label: "摘要", name: "description", widget: "text" }
       - { label: "日期", name: "date", widget: "datetime", date_format: "YYYY-MM-DD", time_format: false, format: "YYYY-MM-DD" }
+      - { label: "状态", name: "status", widget: "select", options: [{ label: "发布", value: "published" }, { label: "归档隐藏", value: "archived" }], default: "published" }
+      - { label: "首页推荐", name: "featured", widget: "boolean", default: false, required: false }
+      - { label: "封面图", name: "cover", widget: "image", required: false }
       - { label: "语言", name: "language", widget: "select", options: ["zh", "en"], default: "zh" }
       - { label: "下载文件", name: "fileUrl", widget: "file", required: false }
       - { label: "标签", name: "tags", widget: "list", required: false }

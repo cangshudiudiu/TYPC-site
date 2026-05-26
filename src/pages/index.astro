@@ -1,7 +1,7 @@
 ---
 import EntryCard from "@/components/EntryCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { latestEntries } from "@/lib/content";
+import { essays, featuredEntries, latestEntries } from "@/lib/content";
 
 const sections = [
   { href: "/blog/", title: "博客", text: "较完整的文章、观点和技术整理。" },
@@ -9,8 +9,11 @@ const sections = [
   { href: "/resources/", title: "资料", text: "文档索引、教程、研究材料和知识库入口。" },
   { href: "/bookmarks/", title: "收藏", text: "值得长期保留的链接、工具和阅读清单。" },
   { href: "/downloads/", title: "下载", text: "可直接获取的文件、模板、PDF 和资料包。" },
+  { href: "/guestbook/", title: "留言", text: "第一版留言板先展示说明，后续接入真实互动。" },
   { href: "/submit/", title: "投稿", text: "外部文章和资料的提交入口，先进入审核流程。" }
 ];
+
+const latestMoments = essays.slice(0, 3);
 ---
 
 <BaseLayout>
@@ -23,8 +26,24 @@ const sections = [
       </p>
     </div>
     <p class="hero-note">
-      Write in Markdown. Publish through GitHub. Deploy on Cloudflare Pages.
+      写日志，发动态，收资料，慢慢整理成自己的网上小屋。
     </p>
+  </section>
+
+  <section class="container profile-strip">
+    <div class="profile-card">
+      <div class="avatar" aria-hidden="true">仓</div>
+      <div>
+        <p class="eyebrow">Space owner</p>
+        <h2>仓鼠丢丢的个人空间</h2>
+        <p>这里放博客、随笔动态、收藏链接和可下载资料。后台接通后，内容会直接在网页端管理并同步到 GitHub。</p>
+      </div>
+    </div>
+    <div class="profile-stats" aria-label="站点统计">
+      <span><strong>{latestEntries.length}</strong> 最新</span>
+      <span><strong>{latestMoments.length}</strong> 动态</span>
+      <span><strong>{featuredEntries.length}</strong> 推荐</span>
+    </div>
   </section>
 
   <section class="container">
@@ -43,6 +62,41 @@ const sections = [
       ))}
     </div>
   </section>
+
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <h2>最近动态</h2>
+        <p>随笔栏目先作为空间动态使用，适合短记录、想法和日常更新。</p>
+      </div>
+    </div>
+    <div class="timeline">
+      {latestMoments.map((entry) => (
+        <article class="moment">
+          <div class="moment-dot" aria-hidden="true"></div>
+          <div>
+            <div class="meta">{entry.date} · {(entry.language ?? "zh").toUpperCase()}</div>
+            <h3><a href={entry.url}>{entry.title}</a></h3>
+            <p>{entry.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  {featuredEntries.length ? (
+    <section class="container">
+      <div class="section-head">
+        <div>
+          <h2>推荐内容</h2>
+          <p>后台勾选“首页推荐”的内容会显示在这里。</p>
+        </div>
+      </div>
+      <div class="grid">
+        {featuredEntries.map((entry) => <EntryCard entry={entry} />)}
+      </div>
+    </section>
+  ) : null}
 
   <section class="container">
     <div class="section-head">

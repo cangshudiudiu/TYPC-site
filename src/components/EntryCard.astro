@@ -9,7 +9,8 @@ const { entry } = Astro.props;
 ---
 
 <article class="card">
-  <div class="meta">{entry.date} · {(entry.language ?? "zh").toUpperCase()}</div>
+  {entry.cover ? <img class="card-cover" src={entry.cover} alt="" loading="lazy" /> : null}
+  <div class="meta">{entry.sectionLabel} · {entry.date} · {(entry.language ?? "zh").toUpperCase()}</div>
   <h3><a href={entry.url}>{entry.title}</a></h3>
   <p>{entry.description}</p>
   {entry.tags?.length ? (
