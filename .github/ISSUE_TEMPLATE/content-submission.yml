@@ -1,0 +1,36 @@
+name: 内容投稿
+description: 提交博客、随笔动态、资料、收藏或下载内容
+title: "[投稿] "
+labels: ["submission"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢投稿。请尽量保留投稿页生成的 Markdown，站长审核后再发布到网站。
+  - type: dropdown
+    id: section
+    attributes:
+      label: 投稿栏目
+      options:
+        - 随笔动态
+        - 博客
+        - 资料
+        - 收藏
+        - 下载
+    validations:
+      required: true
+  - type: textarea
+    id: markdown
+    attributes:
+      label: Markdown 内容
+      description: 粘贴投稿页生成的 Markdown。
+      render: markdown
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 备注
+      description: 可填写来源说明、授权说明或希望补充的信息。
+    validations:
+      required: false

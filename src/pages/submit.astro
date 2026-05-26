@@ -8,23 +8,171 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       <div>
         <p class="eyebrow">Submit</p>
         <h1>投稿</h1>
-        <p>投稿系统会分阶段开放。当前网站已经具备 Markdown 内容结构，下一步会接入 GitHub 登录和审核流程。</p>
+        <p>填写内容后会生成一份标准 Markdown。投稿会先进入 GitHub 审核，不会直接公开。</p>
       </div>
     </div>
 
+    <div class="submit-layout">
+      <form class="submit-form" id="submission-form">
+        <label>
+          投稿栏目
+          <select name="section">
+            <option value="essays">随笔动态</option>
+            <option value="blog">博客</option>
+            <option value="resources">资料</option>
+            <option value="bookmarks">收藏</option>
+            <option value="downloads">下载</option>
+          </select>
+        </label>
+
+        <label>
+          标题
+          <input name="title" type="text" placeholder="给投稿起一个清楚的标题" required />
+        </label>
+
+        <label>
+          一句话摘要
+          <textarea name="description" rows="3" placeholder="用一两句话说明这篇内容是什么" required></textarea>
+        </label>
+
+        <div class="form-row">
+          <label>
+            语言
+            <select name="language">
+              <option value="zh">中文</option>
+              <option value="en">English</option>
+            </select>
+          </label>
+
+          <label>
+            标签
+            <input name="tags" type="text" placeholder="例如：随笔, 工具, 阅读" />
+          </label>
+        </div>
+
+        <label>
+          外部链接或下载地址
+          <input name="url" type="url" placeholder="收藏和下载可填写链接，其他栏目可留空" />
+        </label>
+
+        <label>
+          正文
+          <textarea name="body" rows="14" placeholder="在这里写正文，支持 Markdown" required></textarea>
+        </label>
+
+        <div class="submit-actions">
+          <button type="button" id="copy-submission">复制 Markdown</button>
+          <a class="button-link" id="github-submission" href="https://github.com/cangshudiudiu/TYPC-site/issues/new" target="_blank" rel="noreferrer">
+            提交到 GitHub 审核
+          </a>
+        </div>
+
+        <p class="form-status" id="submission-status" aria-live="polite"></p>
+      </form>
+
+      <aside class="submission-preview">
+        <div class="preview-head">
+          <h2>投稿预览</h2>
+          <p>站长审核后会把这份内容整理进网站。</p>
+        </div>
+        <pre><code id="markdown-preview"></code></pre>
+      </aside>
+    </div>
+  </section>
+
+  <section class="container">
     <div class="grid">
       <article class="card">
-        <h3>当前阶段</h3>
-        <p>站长通过本地 Markdown 或后台测试模式维护内容。内容保存到 GitHub 后，Cloudflare 自动更新网站。</p>
+        <h3>审核流程</h3>
+        <p>投稿会先进入 GitHub Issue，站长确认内容、格式和来源后再发布。</p>
+      </article>
+      <article class="card">
+        <h3>归档隐藏</h3>
+        <p>发布后的内容可以在后台改成归档隐藏，不会直接从源码里删除。</p>
       </article>
       <article class="card">
         <h3>下一阶段</h3>
-        <p>接入 GitHub OAuth 后，站长可以通过网页后台发布博客、随笔、资料、收藏和下载项。</p>
-      </article>
-      <article class="card">
-        <h3>审核阶段</h3>
-        <p>开放投稿后，外部投稿会先进入审核，不会直接公开。审核通过后再发布到网站。</p>
+        <p>后续可以升级成网页表单直达后台审核队列，减少 GitHub 操作。</p>
       </article>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const form = document.querySelector("#submission-form");
+  const preview = document.querySelector("#markdown-preview");
+  const copyButton = document.querySelector("#copy-submission");
+  const githubLink = document.querySelector("#github-submission");
+  const status = document.querySelector("#submission-status");
+
+  const issueBase = "https://github.com/cangshudiudiu/TYPC-site/issues/new";
+  const sectionLabels = {
+    blog: "博客",
+    essays: "随笔动态",
+    resources: "资料",
+    bookmarks: "收藏",
+    downloads: "下载"
+  };
+
+  function today() {
+    return new Date().toISOString().slice(0, 10);
+  }
+
+  function yamlString(value) {
+    return `"${String(value).replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+  }
+
+  function tagsList(value) {
+    return String(value)
+      .split(/[,，]/)
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+  }
+
+  function markdownFromForm() {
+    const data = new FormData(form);
+    const section = data.get("section") || "essays";
+    const title = String(data.get("title") || "").trim();
+    const description = String(data.get("description") || "").trim();
+    const language = String(data.get("language") || "zh");
+    const tags = tagsList(data.get("tags") || "");
+    const url = String(data.get("url") || "").trim();
+    const body = String(data.get("body") || "").trim();
+    const urlField = section === "downloads" ? "fileUrl" : "externalUrl";
+    const optionalUrl = url ? `\n${urlField}: ${yamlString(url)}` : "";
+
+    return `---
+title: ${yamlString(title || "未命名投稿")}
+description: ${yamlString(description || "待补充摘要")}
+date: "${today()}"
+status: "published"
+featured: false
+language: "${language}"
+tags: [${tags.map(yamlString).join(", ")}]${optionalUrl}
+---
+
+${body || "正文写在这里。"}`;
+  }
+
+  function updatePreview() {
+    const markdown = markdownFromForm();
+    const data = new FormData(form);
+    const title = String(data.get("title") || "新投稿").trim();
+    const section = String(data.get("section") || "essays");
+    const issueTitle = `[投稿] ${sectionLabels[section] || section}: ${title || "新投稿"}`;
+    const issueBody = `投稿栏目：${sectionLabels[section] || section}\n\n请审核以下 Markdown 内容：\n\n\`\`\`md\n${markdown}\n\`\`\``;
+
+    preview.textContent = markdown;
+    githubLink.href = `${issueBase}?title=${encodeURIComponent(issueTitle)}&body=${encodeURIComponent(issueBody)}&labels=${encodeURIComponent("submission")}`;
+  }
+
+  form.addEventListener("input", updatePreview);
+  form.addEventListener("change", updatePreview);
+
+  copyButton.addEventListener("click", async () => {
+    await navigator.clipboard.writeText(markdownFromForm());
+    status.textContent = "已复制 Markdown，可以粘贴到 GitHub Issue 或后台。";
+  });
+
+  updatePreview();
+</script>
