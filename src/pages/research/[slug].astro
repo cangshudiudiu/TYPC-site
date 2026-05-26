@@ -1,0 +1,60 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const research = import.meta.glob("../../content/research/*.md", { eager: true });
+  return Object.entries(research).filter(([, item]) => (item as any).frontmatter.status !== "archived").map(([path, item]) => ({
+    params: { slug: path.split("/").pop()?.replace(/\.md$/, "") },
+    props: { item }
+  }));
+}
+
+const { item } = Astro.props;
+const { Content, frontmatter } = item;
+---
+
+<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+  <article class="article">
+    <header>
+      <p class="eyebrow">研究</p>
+      <h1>{frontmatter.title}</h1>
+      <p class="lead">{frontmatter.description}</p>
+      <p class="meta">
+        {frontmatter.date} · {(frontmatter.language ?? "zh").toUpperCase()}
+        {frontmatter.researchStatus ? ` · ${frontmatter.researchStatus}` : ""}
+      </p>
+      {frontmatter.authors?.length ? <p class="byline">{frontmatter.authors.join(", ")}</p> : null}
+    </header>
+
+    <section class="research-meta">
+      {frontmatter.venue ? <p><strong>发表/来源：</strong>{frontmatter.venue}</p> : null}
+      {frontmatter.doi ? <p><strong>DOI：</strong><a href={`https://doi.org/${frontmatter.doi}`}>{frontmatter.doi}</a></p> : null}
+      {frontmatter.codeUrl ? <p><strong>代码：</strong><a href={frontmatter.codeUrl}>{frontmatter.codeUrl}</a></p> : null}
+    </section>
+
+    {frontmatter.attachments?.length ? (
+      <section class="attachment-panel">
+        <h2>附件下载</h2>
+        <div class="attachment-list">
+          {frontmatter.attachments.map((attachment) => (
+            <a class="attachment-link" href={attachment.url}>
+              <span>{attachment.type ?? "file"}</span>
+              {attachment.label}
+            </a>
+          ))}
+        </div>
+      </section>
+    ) : null}
+
+    <div class="article-content">
+      <Content />
+    </div>
+
+    {frontmatter.citation ? (
+      <section class="citation-box">
+        <h2>引用</h2>
+        <p>{frontmatter.citation}</p>
+      </section>
+    ) : null}
+  </article>
+</BaseLayout>

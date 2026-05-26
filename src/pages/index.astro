@@ -1,9 +1,10 @@
 ---
 import EntryCard from "@/components/EntryCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { essays, featuredEntries, latestEntries } from "@/lib/content";
+import { essays, featuredEntries, latestEntries, research } from "@/lib/content";
 
 const sections = [
+  { href: "/research/", title: "研究", text: "研究文章、项目说明、PDF、数据、代码和补充材料。" },
   { href: "/blog/", title: "博客", text: "较完整的文章、观点和技术整理。" },
   { href: "/essays/", title: "随笔", text: "短想法、观察、记录和日常片段。" },
   { href: "/resources/", title: "资料", text: "文档索引、教程、研究材料和知识库入口。" },
@@ -14,6 +15,7 @@ const sections = [
 ];
 
 const latestMoments = essays.slice(0, 3);
+const latestResearch = research.slice(0, 3);
 ---
 
 <BaseLayout>
@@ -22,7 +24,7 @@ const latestMoments = essays.slice(0, 3);
       <p class="eyebrow">Personal homepage and archive</p>
       <h1>cangshuzhijia</h1>
       <p class="lead">
-        一个简洁的个人主页，用来发布中文和英文文章、随笔、资料索引、收藏链接与下载文件。
+        一个个人研究展示站，用来发布研究文章、博客、随笔动态、资料索引、收藏链接与可下载附件。
       </p>
     </div>
     <p class="hero-note">
@@ -36,15 +38,30 @@ const latestMoments = essays.slice(0, 3);
       <div>
         <p class="eyebrow">Space owner</p>
         <h2>仓鼠丢丢的个人空间</h2>
-        <p>这里放博客、随笔动态、收藏链接和可下载资料。后台接通后，内容会直接在网页端管理并同步到 GitHub。</p>
+        <p>这里展示个人研究、文章、动态和资料。研究内容可以同时包含正文、PDF、数据、代码与补充材料。</p>
       </div>
     </div>
     <div class="profile-stats" aria-label="站点统计">
       <span><strong>{latestEntries.length}</strong> 最新</span>
+      <span><strong>{latestResearch.length}</strong> 研究</span>
       <span><strong>{latestMoments.length}</strong> 动态</span>
       <span><strong>{featuredEntries.length}</strong> 推荐</span>
     </div>
   </section>
+
+  {latestResearch.length ? (
+    <section class="container">
+      <div class="section-head">
+        <div>
+          <h2>最新研究</h2>
+          <p>研究文章支持正文说明和附件下载，适合沉淀论文、项目、数据和代码。</p>
+        </div>
+      </div>
+      <div class="grid">
+        {latestResearch.map((entry) => <EntryCard entry={entry} />)}
+      </div>
+    </section>
+  ) : null}
 
   <section class="container">
     <div class="section-head">

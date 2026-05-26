@@ -1,0 +1,38 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { research } from "@/lib/content";
+---
+
+<BaseLayout title="研究" description="Research articles and attachments from cangshuzhijia.">
+  <section class="container">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Research</p>
+        <h1>研究</h1>
+        <p>展示个人研究文章、项目说明、PDF、数据、代码和补充材料。</p>
+      </div>
+    </div>
+    <div class="list">
+      {research.map((item) => (
+        <article class="list-item research-item">
+          <div class="meta">
+            {item.date} · {(item.language ?? "zh").toUpperCase()}
+            {item.researchStatus ? ` · ${item.researchStatus}` : ""}
+          </div>
+          <h2><a href={item.url}>{item.title}</a></h2>
+          <p>{item.description}</p>
+          {item.authors?.length ? <p class="byline">{item.authors.join(", ")}</p> : null}
+          {item.attachments?.length ? (
+            <div class="attachment-row">
+              {item.attachments.map((attachment) => (
+                <a class="attachment-link" href={attachment.url}>
+                  {attachment.type ?? "file"} · {attachment.label}
+                </a>
+              ))}
+            </div>
+          ) : null}
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

@@ -1,4 +1,4 @@
-import { blogPosts, essays } from "@/lib/content";
+import { blogPosts, essays, research } from "@/lib/content";
 
 const site = "https://www.cangshudiudiu.com";
 
@@ -12,7 +12,7 @@ function escapeXml(value: string) {
 }
 
 export function GET() {
-  const items = [...blogPosts, ...essays]
+  const items = [...research, ...blogPosts, ...essays]
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
     .slice(0, 20)
     .map((entry) => {

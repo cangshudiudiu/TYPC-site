@@ -13,7 +13,26 @@ const schema = z.object({
   fileUrl: z.string().optional()
 });
 
+const researchSchema = schema.extend({
+  authors: z.array(z.string()).default([]),
+  researchStatus: z.enum(["draft", "preprint", "published"]).default("preprint"),
+  venue: z.string().optional(),
+  doi: z.string().optional(),
+  codeUrl: z.string().optional(),
+  citation: z.string().optional(),
+  attachments: z
+    .array(
+      z.object({
+        label: z.string(),
+        type: z.string().default("file"),
+        url: z.string()
+      })
+    )
+    .default([])
+});
+
 export const collections = {
+  research: defineCollection({ schema: researchSchema }),
   blog: defineCollection({ schema }),
   essays: defineCollection({ schema }),
   resources: defineCollection({ schema }),

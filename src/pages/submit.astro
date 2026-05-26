@@ -17,6 +17,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
         <label>
           投稿栏目
           <select name="section">
+            <option value="research">研究</option>
             <option value="essays">随笔动态</option>
             <option value="blog">博客</option>
             <option value="resources">资料</option>
@@ -52,7 +53,12 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
         <label>
           外部链接或下载地址
-          <input name="url" type="url" placeholder="收藏和下载可填写链接，其他栏目可留空" />
+          <input name="url" type="url" placeholder="研究可填代码链接，收藏和下载可填写链接，其他栏目可留空" />
+        </label>
+
+        <label>
+          研究附件
+          <textarea name="attachments" rows="4" placeholder="研究投稿可填写附件，每行一个：PDF | 研究说明 | https://example.com/file.pdf"></textarea>
         </label>
 
         <label>
@@ -107,6 +113,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
   const issueBase = "https://github.com/cangshudiudiu/TYPC-site/issues/new";
   const sectionLabels = {
+    research: "研究",
     blog: "博客",
     essays: "随笔动态",
     resources: "资料",
@@ -129,6 +136,18 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
       .filter(Boolean);
   }
 
+  function attachmentsList(value) {
+    return String(value)
+      .split(/\n+/)
+      .map((line) => line.trim())
+      .filter(Boolean)
+      .map((line) => {
+        const [type = "File", label = "附件", url = ""] = line.split("|").map((part) => part.trim());
+        return { type, label, url };
+      })
+      .filter((item) => item.url);
+  }
+
   function markdownFromForm() {
     const data = new FormData(form);
     const section = data.get("section") || "essays";
@@ -136,10 +155,15 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     const description = String(data.get("description") || "").trim();
     const language = String(data.get("language") || "zh");
     const tags = tagsList(data.get("tags") || "");
+    const attachments = attachmentsList(data.get("attachments") || "");
     const url = String(data.get("url") || "").trim();
     const body = String(data.get("body") || "").trim();
-    const urlField = section === "downloads" ? "fileUrl" : "externalUrl";
+    const urlField = section === "downloads" ? "fileUrl" : section === "research" ? "codeUrl" : "externalUrl";
     const optionalUrl = url ? `\n${urlField}: ${yamlString(url)}` : "";
+    const researchFields =
+      section === "research"
+        ? `\nauthors: []\nresearchStatus: "preprint"\nvenue: ""\ndoi: ""\ncitation: ""\nattachments:${attachments.length ? attachments.map((item) => `\n  - label: ${yamlString(item.label)}\n    type: ${yamlString(item.type)}\n    url: ${yamlString(item.url)}`).join("") : " []"}`
+        : "";
 
     return `---
 title: ${yamlString(title || "未命名投稿")}
@@ -148,7 +172,7 @@ date: "${today()}"
 status: "published"
 featured: false
 language: "${language}"
-tags: [${tags.map(yamlString).join(", ")}]${optionalUrl}
+tags: [${tags.map(yamlString).join(", ")}]${optionalUrl}${researchFields}
 ---
 
 ${body || "正文写在这里。"}`;

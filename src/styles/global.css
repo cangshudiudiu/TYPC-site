@@ -302,6 +302,68 @@ h3 {
   margin: 0;
 }
 
+.byline {
+  color: var(--accent-strong);
+  margin: 0;
+}
+
+.research-item {
+  gap: 10px;
+}
+
+.research-meta,
+.attachment-panel,
+.citation-box {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.research-meta p,
+.citation-box p {
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+
+.research-meta p:last-child,
+.citation-box p:last-child {
+  margin-bottom: 0;
+}
+
+.attachment-panel h2,
+.citation-box h2 {
+  font-size: 22px;
+  margin-bottom: 14px;
+}
+
+.attachment-list,
+.attachment-row {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.attachment-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #ffffff;
+  color: var(--accent-strong);
+  padding: 7px 11px;
+  text-decoration: none;
+}
+
+.attachment-link span {
+  color: var(--muted);
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
 .timeline {
   position: relative;
   display: grid;

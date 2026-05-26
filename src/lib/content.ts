@@ -10,6 +10,17 @@ type Module = {
     tags?: string[];
     externalUrl?: string;
     fileUrl?: string;
+    authors?: string[];
+    researchStatus?: "draft" | "preprint" | "published";
+    venue?: string;
+    doi?: string;
+    codeUrl?: string;
+    citation?: string;
+    attachments?: {
+      label: string;
+      type?: string;
+      url: string;
+    }[];
   };
   url?: string;
   file: string;
@@ -23,18 +34,22 @@ export type Entry = Module["frontmatter"] & {
 };
 
 const blogModules = import.meta.glob<Module>("../content/blog/*.md", { eager: true });
+const researchModules = import.meta.glob<Module>("../content/research/*.md", { eager: true });
 const essayModules = import.meta.glob<Module>("../content/essays/*.md", { eager: true });
 const resourceModules = import.meta.glob<Module>("../content/resources/*.md", { eager: true });
 const bookmarkModules = import.meta.glob<Module>("../content/bookmarks/*.md", { eager: true });
 const downloadModules = import.meta.glob<Module>("../content/downloads/*.md", { eager: true });
 
 const sectionLabels: Record<string, string> = {
+  research: "研究",
   blog: "博客",
   essays: "动态",
   resources: "资料",
   bookmarks: "收藏",
   downloads: "下载"
 };
+
+const internalSections = new Set(["research", "blog", "essays", "resources"]);
 
 function toEntries(modules: Record<string, Module>, base: string): Entry[] {
   return Object.entries(modules)
@@ -46,34 +61,38 @@ function toEntries(modules: Record<string, Module>, base: string): Entry[] {
         slug,
         section: base,
         sectionLabel: sectionLabels[base] ?? base,
-        url: mod.frontmatter.externalUrl ?? mod.frontmatter.fileUrl ?? `/${base}/${slug}/`
+        url:
+          internalSections.has(base) || (!mod.frontmatter.externalUrl && !mod.frontmatter.fileUrl)
+            ? `/${base}/${slug}/`
+            : (mod.frontmatter.externalUrl ?? mod.frontmatter.fileUrl ?? `/${base}/${slug}/`)
       };
     })
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
+export const research = toEntries(researchModules, "research");
 export const blogPosts = toEntries(blogModules, "blog");
 export const essays = toEntries(essayModules, "essays");
 export const resources = toEntries(resourceModules, "resources");
 export const bookmarks = toEntries(bookmarkModules, "bookmarks");
 export const downloads = toEntries(downloadModules, "downloads");
 
-export const latestEntries = [...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+export const latestEntries = [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 6);
 
-export const featuredEntries = [...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+export const featuredEntries = [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
   .filter((entry) => entry.featured)
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 3);
 
 export const allTags = Array.from(
-  new Set([...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads].flatMap((entry) => entry.tags ?? []))
+  new Set([...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads].flatMap((entry) => entry.tags ?? []))
 ).sort((a, b) => a.localeCompare(b, "zh-CN"));
 
 export const entriesByTag = allTags.map((tag) => ({
   tag,
-  entries: [...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+  entries: [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
     .filter((entry) => entry.tags?.includes(tag))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }));
