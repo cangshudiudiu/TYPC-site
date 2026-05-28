@@ -1,9 +1,12 @@
 ---
-title: "网站开张：从这里开始"
-description: "第一篇博客，用来说明这个网站会如何组织内容。"
-date: "2026-05-22"
-language: "zh"
-tags: ["site", "start"]
+title: 网站开张：从这里开始
+description: 第一篇博客，用来说明这个网站会如何组织内容。
+date: 2026-05-22
+status: archived
+language: zh
+tags:
+  - site
+  - start
 ---
 
 这里是“藏书小刊”的个人研究主页和博客。
