@@ -1,6 +1,6 @@
 # Decap CMS GitHub OAuth 部署步骤
 
-当前 `/admin/` 使用 Decap CMS 测试模式，不会写入 GitHub。要让后台真正保存内容，需要部署 GitHub OAuth proxy。
+当前 `/admin/` 使用 Decap CMS 和 GitHub OAuth。要让后台真正保存内容，需要部署 GitHub OAuth proxy。
 
 ## 1. 创建 GitHub OAuth App
 
@@ -20,7 +20,7 @@ OAuth Apps -> New OAuth App
 
 ```text
 Application name:
-cangshuzhijia CMS
+藏书小刊 CMS
 
 Homepage URL:
 https://decap-oauth.uquk202268.workers.dev
@@ -65,7 +65,6 @@ backend:
   base_url: https://decap-oauth.uquk202268.workers.dev
   auth_endpoint: /auth
   use_graphql: true
-  open_authoring: true
 ```
 
 然后提交并推送，Cloudflare 会重新部署网站。

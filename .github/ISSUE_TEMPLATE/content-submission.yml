@@ -1,5 +1,5 @@
 name: 内容投稿
-description: 提交博客、随笔动态、资料、收藏或下载内容
+description: 提交研究、博客、随笔动态、资料、收藏或下载内容
 title: "[投稿] "
 labels: ["submission"]
 body:
@@ -7,6 +7,8 @@ body:
     attributes:
       value: |
         感谢投稿。请尽量保留投稿页生成的 Markdown，站长审核后再发布到网站。
+
+        请不要提交隐私文件、账号密钥、未授权转载内容或无法公开的附件。研究附件请先提供公开链接，正式文件由站长审核后再整理。
   - type: dropdown
     id: section
     attributes:

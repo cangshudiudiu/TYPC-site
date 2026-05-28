@@ -7,8 +7,8 @@ type Props = {
 };
 
 const {
-  title = "cangshuzhijia",
-  description = "A personal homepage, bilingual blog, notes, resources, bookmarks, and downloads."
+  title = "藏书小刊",
+  description = "藏书小刊是一个个人研究、文章、随笔、资料和下载附件的静态小刊。"
 } = Astro.props;
 
 const nav = [
@@ -33,13 +33,16 @@ const currentPath = Astro.url.pathname;
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title === "cangshuzhijia" ? title : `${title} | cangshuzhijia`}</title>
+    <title>{title === "藏书小刊" ? title : `${title} | 藏书小刊`}</title>
   </head>
   <body>
     <div class="site-shell">
       <header class="site-header">
         <nav class="nav" aria-label="Primary navigation">
-          <a class="brand" href="/">cangshuzhijia</a>
+          <a class="brand" href="/">
+            <img src="/favicon.svg" alt="" aria-hidden="true" />
+            <span>藏书小刊</span>
+          </a>
           <div class="nav-links">
             {nav.map((item) => (
               <a href={item.href} aria-current={currentPath.startsWith(item.href) ? "page" : undefined}>
@@ -54,7 +57,7 @@ const currentPath = Astro.url.pathname;
       </main>
       <footer class="footer">
         <div class="footer-inner">
-          <span>© {new Date().getFullYear()} cangshuzhijia</span>
+          <span>© {new Date().getFullYear()} 藏书小刊</span>
           <span><a href="/admin/">Admin</a> · <a href="/rss.xml">RSS</a> · Built with Astro. Content in Markdown.</span>
         </div>
       </footer>

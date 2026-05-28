@@ -1,6 +1,6 @@
 # TYPC-site
 
-Personal homepage and blog for `cangshuzhijia`.
+Personal research journal and static website for 藏书小刊.
 
 ## Local development
 

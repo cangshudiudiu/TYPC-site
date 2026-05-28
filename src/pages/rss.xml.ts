@@ -30,8 +30,8 @@ export function GET() {
   return new Response(`<?xml version="1.0" encoding="UTF-8" ?>
 <rss version="2.0">
 <channel>
-  <title>cangshuzhijia</title>
-  <description>博客和随笔动态更新</description>
+  <title>藏书小刊</title>
+  <description>藏书小刊的研究、博客和随笔动态更新</description>
   <link>${site}</link>
   ${items}
 </channel>

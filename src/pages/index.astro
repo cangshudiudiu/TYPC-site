@@ -1,7 +1,7 @@
 ---
 import EntryCard from "@/components/EntryCard.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { essays, featuredEntries, latestEntries, research } from "@/lib/content";
+import { latestEntries } from "@/lib/content";
 
 const sections = [
   { href: "/research/", title: "研究", text: "研究文章、项目说明、PDF、数据、代码和补充材料。" },
@@ -13,107 +13,35 @@ const sections = [
   { href: "/guestbook/", title: "留言", text: "第一版留言板先展示说明，后续接入真实互动。" },
   { href: "/submit/", title: "投稿", text: "外部文章和资料的提交入口，先进入审核流程。" }
 ];
-
-const latestMoments = essays.slice(0, 3);
-const latestResearch = research.slice(0, 3);
 ---
 
 <BaseLayout>
   <section class="container hero">
     <div>
-      <p class="eyebrow">Personal homepage and archive</p>
-      <h1>cangshuzhijia</h1>
+      <p class="eyebrow">Personal research journal</p>
+      <h1>藏书小刊</h1>
       <p class="lead">
-        一个个人研究展示站，用来发布研究文章、博客、随笔动态、资料索引、收藏链接与可下载附件。
+        一个简约快速的个人研究小刊，用来发布研究文章、博客、随笔动态、资料索引、收藏链接与可下载附件。
       </p>
     </div>
-    <p class="hero-note">
-      写日志，发动态，收资料，慢慢整理成自己的网上小屋。
-    </p>
   </section>
-
-  <section class="container profile-strip">
-    <div class="profile-card">
-      <div class="avatar" aria-hidden="true">仓</div>
-      <div>
-        <p class="eyebrow">Space owner</p>
-        <h2>仓鼠丢丢的个人空间</h2>
-        <p>这里展示个人研究、文章、动态和资料。研究内容可以同时包含正文、PDF、数据、代码与补充材料。</p>
-      </div>
-    </div>
-    <div class="profile-stats" aria-label="站点统计">
-      <span><strong>{latestEntries.length}</strong> 最新</span>
-      <span><strong>{latestResearch.length}</strong> 研究</span>
-      <span><strong>{latestMoments.length}</strong> 动态</span>
-      <span><strong>{featuredEntries.length}</strong> 推荐</span>
-    </div>
-  </section>
-
-  {latestResearch.length ? (
-    <section class="container">
-      <div class="section-head">
-        <div>
-          <h2>最新研究</h2>
-          <p>研究文章支持正文说明和附件下载，适合沉淀论文、项目、数据和代码。</p>
-        </div>
-      </div>
-      <div class="grid">
-        {latestResearch.map((entry) => <EntryCard entry={entry} />)}
-      </div>
-    </section>
-  ) : null}
 
   <section class="container">
     <div class="section-head">
       <div>
         <h2>栏目</h2>
-        <p>第一版保持轻量，内容结构清楚，后续可以继续加搜索、标签页、RSS 和评论。</p>
+        <p>第一版保持轻量，内容结构清楚，先保证发文、归档、下载和订阅稳定可用。</p>
       </div>
     </div>
-    <div class="grid">
+    <div class="grid section-grid">
       {sections.map((section) => (
-        <article class="card">
+        <article class="card section-card">
           <h3><a href={section.href}>{section.title}</a></h3>
           <p>{section.text}</p>
         </article>
       ))}
     </div>
   </section>
-
-  <section class="container">
-    <div class="section-head">
-      <div>
-        <h2>最近动态</h2>
-        <p>随笔栏目先作为空间动态使用，适合短记录、想法和日常更新。</p>
-      </div>
-    </div>
-    <div class="timeline">
-      {latestMoments.map((entry) => (
-        <article class="moment">
-          <div class="moment-dot" aria-hidden="true"></div>
-          <div>
-            <div class="meta">{entry.date} · {(entry.language ?? "zh").toUpperCase()}</div>
-            <h3><a href={entry.url}>{entry.title}</a></h3>
-            <p>{entry.description}</p>
-          </div>
-        </article>
-      ))}
-    </div>
-  </section>
-
-  {featuredEntries.length ? (
-    <section class="container">
-      <div class="section-head">
-        <div>
-          <h2>推荐内容</h2>
-          <p>后台勾选“首页推荐”的内容会显示在这里。</p>
-        </div>
-      </div>
-      <div class="grid">
-        {featuredEntries.map((entry) => <EntryCard entry={entry} />)}
-      </div>
-    </section>
-  ) : null}
 
   <section class="container">
     <div class="section-head">

@@ -2,13 +2,13 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="投稿" description="Submit writing or resources to cangshuzhijia.">
+<BaseLayout title="投稿" description="向藏书小刊提交文章、研究或资料。">
   <section class="container">
     <div class="section-head">
       <div>
         <p class="eyebrow">Submit</p>
         <h1>投稿</h1>
-        <p>填写内容后会生成一份标准 Markdown。投稿会先进入 GitHub 审核，不会直接公开。</p>
+        <p>填写内容后会生成一份标准 Markdown。投稿只会进入站长审核，不会直接公开到网站。</p>
       </div>
     </div>
 
@@ -58,8 +58,13 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
         <label>
           研究附件
-          <textarea name="attachments" rows="4" placeholder="研究投稿可填写附件，每行一个：PDF | 研究说明 | https://example.com/file.pdf"></textarea>
+          <textarea name="attachments" rows="4" placeholder="研究投稿可填写附件公开链接，每行一个：PDF | 研究说明 | https://example.com/file.pdf"></textarea>
         </label>
+
+        <div class="notice compact-notice">
+          <strong>安全提醒</strong>
+          <p>请不要提交隐私文件、账号密钥、未授权转载内容或无法公开的附件。所有链接和正文都会由站长人工审核后再发布。</p>
+        </div>
 
         <label>
           正文
@@ -90,15 +95,15 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     <div class="grid">
       <article class="card">
         <h3>审核流程</h3>
-        <p>投稿会先进入 GitHub Issue，站长确认内容、格式和来源后再发布。</p>
+        <p>投稿会先进入 GitHub Issue，站长确认内容、格式、来源和附件安全后再发布。</p>
       </article>
       <article class="card">
         <h3>归档隐藏</h3>
         <p>发布后的内容可以在后台改成归档隐藏，不会直接从源码里删除。</p>
       </article>
       <article class="card">
-        <h3>下一阶段</h3>
-        <p>后续可以升级成网页表单直达后台审核队列，减少 GitHub 操作。</p>
+        <h3>附件说明</h3>
+        <p>研究附件第一版请填写公开链接，正式文件由站长审核后再放入网站后台或仓库。</p>
       </article>
     </div>
   </section>
@@ -169,7 +174,7 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 title: ${yamlString(title || "未命名投稿")}
 description: ${yamlString(description || "待补充摘要")}
 date: "${today()}"
-status: "published"
+status: "archived"
 featured: false
 language: "${language}"
 tags: [${tags.map(yamlString).join(", ")}]${optionalUrl}${researchFields}

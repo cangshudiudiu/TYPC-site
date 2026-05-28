@@ -6,12 +6,12 @@ status: "published"
 featured: true
 language: "zh"
 tags: ["研究", "样例"]
-authors: ["cangshuzhijia"]
+authors: ["藏书小刊"]
 researchStatus: "preprint"
 venue: "个人研究档案"
 doi: ""
 codeUrl: "https://github.com/cangshudiudiu/TYPC-site"
-citation: "cangshuzhijia. (2026). 个人研究展示样例."
+citation: "藏书小刊. (2026). 个人研究展示样例."
 attachments:
   - label: "研究说明 PDF"
     type: "PDF"

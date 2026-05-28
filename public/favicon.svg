@@ -1,4 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img">
-  <rect width="64" height="64" rx="12" fill="#111827"/>
-  <path d="M18 18h28v6H25v11h17v6H25v5h22v6H18V18Z" fill="#f8fafc"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="藏书小刊">
+  <rect width="64" height="64" rx="12" fill="#f8f3e7"/>
+  <rect x="10" y="10" width="44" height="44" rx="6" fill="#b3261e"/>
+  <rect x="15" y="15" width="34" height="34" rx="3" fill="none" stroke="#f8f3e7" stroke-width="2.5"/>
+  <path d="M21 23h22M25 19v8M31 19v8M22 31h20M25 31v13M39 31v13M25 38h14M31 31v13" fill="none" stroke="#f8f3e7" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M18 48c7-3 20-3 28 0" fill="none" stroke="#f8f3e7" stroke-width="2.6" stroke-linecap="round" opacity=".9"/>
 </svg>
