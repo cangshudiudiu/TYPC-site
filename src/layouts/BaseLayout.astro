@@ -4,49 +4,87 @@ import "../styles/global.css";
 type Props = {
   title?: string;
   description?: string;
+  noindex?: boolean;
+  locale?: "zh" | "en";
+  showLanguageSwitch?: boolean;
 };
 
 const {
-  title = "藏书小刊",
-  description = "藏书小刊是一个个人研究、文章、随笔、资料和下载附件的静态小刊。"
+  locale = "zh",
+  title = locale === "en" ? "Cangshu Journal" : "藏书小刊",
+  description = locale === "en"
+    ? "Cangshu Journal is a personal collection of research, essays, resources and downloadable materials."
+    : "藏书小刊是一个个人研究、文章、随笔、资料和下载附件的静态小刊。",
+  noindex = false,
+  showLanguageSwitch = true
 } = Astro.props;
 
-const nav = [
-  { href: "/research/", label: "研究" },
-  { href: "/blog/", label: "博客" },
-  { href: "/essays/", label: "随笔" },
-  { href: "/resources/", label: "资料" },
-  { href: "/downloads/", label: "下载" },
-  { href: "/submit/", label: "投稿" }
-];
+const prefix = locale === "en" ? "/en" : "";
+const nav = locale === "en"
+  ? [
+      { href: `${prefix}/research/`, label: "Research" },
+      { href: `${prefix}/blog/`, label: "Blog" },
+      { href: `${prefix}/essays/`, label: "Notes" },
+      { href: `${prefix}/resources/`, label: "Resources" },
+      { href: `${prefix}/bookmarks/`, label: "Bookmarks" },
+      { href: `${prefix}/downloads/`, label: "Downloads" },
+      { href: `${prefix}/search/`, label: "Search" }
+    ]
+  : [
+      { href: "/research/", label: "研究" },
+      { href: "/blog/", label: "博客" },
+      { href: "/essays/", label: "随笔" },
+      { href: "/resources/", label: "资料" },
+      { href: "/bookmarks/", label: "收藏" },
+      { href: "/downloads/", label: "下载" },
+      { href: "/search/", label: "搜索" }
+    ];
 
 const currentPath = Astro.url.pathname;
+const siteTitle = locale === "en" ? "Cangshu Journal" : "藏书小刊";
+const alternateUrl = locale === "en"
+  ? (currentPath.replace(/^\/en/, "") || "/")
+  : `/en${currentPath === "/" ? "/" : currentPath}`;
 ---
 
 <!doctype html>
-<html lang="zh-CN">
+<html lang={locale === "en" ? "en" : "zh-CN"}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content={description} />
+    {noindex ? <meta name="robots" content="noindex, nofollow" /> : null}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <title>{title === "藏书小刊" ? title : `${title} | 藏书小刊`}</title>
+    {showLanguageSwitch ? <link rel="alternate" hreflang={locale === "en" ? "zh-CN" : "en"} href={alternateUrl} /> : null}
+    <title>{title === siteTitle ? title : `${title} | ${siteTitle}`}</title>
   </head>
   <body>
     <div class="site-shell">
       <header class="site-header">
         <nav class="nav" aria-label="Primary navigation">
-          <a class="brand" href="/">
+          <a class="brand" href={locale === "en" ? "/en/" : "/"}>
             <img src="/favicon.svg" alt="" aria-hidden="true" />
-            <span>藏书小刊</span>
+            <span>{siteTitle}</span>
           </a>
-          <div class="nav-links">
+          <div class="nav-links desktop-nav">
             {nav.map((item) => (
               <a href={item.href} aria-current={currentPath.startsWith(item.href) ? "page" : undefined}>
                 {item.label}
               </a>
             ))}
+            {showLanguageSwitch ? <a class="language-switch" href={alternateUrl}>{locale === "en" ? "中文" : "EN"}</a> : null}
           </div>
+          <details class="mobile-nav">
+            <summary>{locale === "en" ? "Menu" : "菜单"}</summary>
+            <div class="mobile-nav-panel">
+              {nav.map((item) => (
+                <a href={item.href} aria-current={currentPath.startsWith(item.href) ? "page" : undefined}>
+                  {item.label}
+                </a>
+              ))}
+              {showLanguageSwitch ? <a class="language-switch" href={alternateUrl}>{locale === "en" ? "中文" : "English"}</a> : null}
+            </div>
+          </details>
         </nav>
       </header>
       <main class="main">
@@ -54,8 +92,7 @@ const currentPath = Astro.url.pathname;
       </main>
       <footer class="footer">
         <div class="footer-inner">
-          <span>© {new Date().getFullYear()} 藏书小刊</span>
-          <span><a href="/admin/">Admin</a> · <a href="/rss.xml">RSS</a> · Built with Astro. Content in Markdown.</span>
+          <span>© {new Date().getFullYear()} {siteTitle}</span>
         </div>
       </footer>
     </div>

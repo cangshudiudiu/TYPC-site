@@ -1,0 +1,21 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { researchEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Research" description="Research articles, projects and supporting material from Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Research</p><h1>Research</h1><p>Personal research articles, project notes, PDFs, data, code and supplementary material.</p></div></div>
+    <div class="list">
+      {researchEn.map((item) => (
+        <article class="list-item research-item">
+          <div class="meta">{item.date} · EN{item.researchStatus ? ` · ${item.researchStatus}` : ""}</div>
+          <h2><a href={item.url}>{item.title}</a></h2>
+          <p>{item.description}</p>
+          {item.authors?.length ? <p class="byline">{item.authors.join(", ")}</p> : null}
+          {item.attachments?.length ? <div class="attachment-row">{item.attachments.map((attachment) => <a class="attachment-link" href={attachment.url}>{attachment.type ?? "file"} · {attachment.label}</a>)}</div> : null}
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

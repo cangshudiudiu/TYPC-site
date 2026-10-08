@@ -77,22 +77,25 @@ export const resources = toEntries(resourceModules, "resources");
 export const bookmarks = toEntries(bookmarkModules, "bookmarks");
 export const downloads = toEntries(downloadModules, "downloads");
 
-export const latestEntries = [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+export const allEntries = [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+  .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+
+export const latestEntries = allEntries
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 6);
 
-export const featuredEntries = [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+export const featuredEntries = allEntries
   .filter((entry) => entry.featured)
   .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
   .slice(0, 3);
 
 export const allTags = Array.from(
-  new Set([...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads].flatMap((entry) => entry.tags ?? []))
+  new Set(allEntries.flatMap((entry) => entry.tags ?? []))
 ).sort((a, b) => a.localeCompare(b, "zh-CN"));
 
 export const entriesByTag = allTags.map((tag) => ({
   tag,
-  entries: [...research, ...blogPosts, ...essays, ...resources, ...bookmarks, ...downloads]
+  entries: allEntries
     .filter((entry) => entry.tags?.includes(tag))
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
 }));

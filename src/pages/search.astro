@@ -1,0 +1,72 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { allEntries } from "@/lib/content";
+
+const searchEntries = allEntries.map(({ title, description, date, tags, url, sectionLabel }) => ({
+  title,
+  description,
+  date,
+  tags: tags ?? [],
+  url,
+  sectionLabel
+}));
+---
+
+<BaseLayout title="站内搜索" description="搜索藏书小刊的文章、研究、随笔与资料。">
+  <section class="container search-page">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Search</p>
+        <h1>站内搜索</h1>
+        <p>输入标题、摘要、栏目或标签，结果会立即显示。</p>
+      </div>
+    </div>
+
+    <label class="search-box">
+      <span class="sr-only">搜索内容</span>
+      <input id="site-search" type="search" placeholder="例如：AI、研究、工具……" autocomplete="off" />
+    </label>
+    <p class="search-summary" id="search-summary" aria-live="polite">共 {searchEntries.length} 条内容</p>
+    <div class="list" id="search-results"></div>
+    <script type="application/json" id="search-data" set:html={JSON.stringify(searchEntries).replace(/</g, "\\u003c")}></script>
+  </section>
+</BaseLayout>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>("#site-search");
+  const results = document.querySelector<HTMLDivElement>("#search-results");
+  const summary = document.querySelector<HTMLParagraphElement>("#search-summary");
+  const dataElement = document.querySelector<HTMLScriptElement>("#search-data");
+  const entries = JSON.parse(dataElement?.textContent || "[]");
+  const initialQuery = new URLSearchParams(window.location.search).get("q") || "";
+  if (input) input.value = initialQuery;
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>'"]/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+    })[character] || character);
+  }
+
+  function render() {
+    const query = (input?.value || "").trim().toLocaleLowerCase("zh-CN");
+    const filtered = entries.filter((entry: any) => {
+      if (!query) return true;
+      return [entry.title, entry.description, entry.sectionLabel, ...(entry.tags || [])]
+        .join(" ").toLocaleLowerCase("zh-CN").includes(query);
+    });
+    if (summary) summary.textContent = query ? `找到 ${filtered.length} 条相关内容` : `共 ${filtered.length} 条内容`;
+    if (!results) return;
+    results.innerHTML = filtered.length
+      ? filtered.map((entry: any) => `
+          <article class="list-item">
+            <div class="meta">${escapeHtml(entry.sectionLabel)} · ${escapeHtml(entry.date)}</div>
+            <h2><a href="${encodeURI(entry.url)}">${escapeHtml(entry.title)}</a></h2>
+            <p>${escapeHtml(entry.description)}</p>
+            ${entry.tags?.length ? `<div class="tags">${entry.tags.map((tag: string) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>` : ""}
+          </article>`).join("")
+      : `<div class="empty-state"><h2>没有找到相关内容</h2><p>试试更短的关键词，或搜索栏目和标签名称。</p></div>`;
+  }
+
+  input?.addEventListener("input", render);
+  render();
+</script>

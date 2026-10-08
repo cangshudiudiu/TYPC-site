@@ -2,25 +2,122 @@
 import BaseLayout from "@/layouts/BaseLayout.astro";
 ---
 
-<BaseLayout title="留言" description="藏书小刊留言页。">
+<BaseLayout title="留言板" description="在藏书小刊留言，内容审核通过后公开展示。" noindex={true} showLanguageSwitch={false}>
   <section class="container">
     <div class="section-head">
       <div>
         <p class="eyebrow">Guestbook</p>
-        <h1>留言</h1>
-        <p>第一版留言板先作为说明页上线，后续再接入真实留言提交和后台审核。</p>
+        <h1>留言板</h1>
+        <p>欢迎聊文章、资料与想法。留言会先经过审核，联系方式不会公开。</p>
       </div>
     </div>
-    <div class="guestbook">
-      <article class="notice">
-        <h2>可以先这样留言</h2>
-        <p>如果想交流文章、资料、链接或投稿，可以先通过投稿页说明的方式联系。正式留言系统会优先支持审核后展示，避免垃圾内容直接公开。</p>
-        <a class="button-link" href="/submit/">查看投稿说明</a>
-      </article>
-      <article class="notice">
-        <h2>后续会开放</h2>
-        <p>计划增加网页留言表单、后台审核队列、精选留言和按文章关联评论。第一版先保持静态，确保网站和后台发文稳定。</p>
-      </article>
+
+    <div class="guestbook-layout">
+      <form class="submit-form" id="guestbook-form">
+        <input class="honeypot" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true" />
+        <input name="startedAt" type="hidden" />
+        <label>
+          称呼
+          <input name="name" type="text" maxlength="40" placeholder="希望怎样称呼你" required />
+        </label>
+        <label>
+          个人主页 <span class="optional">选填，不公开联系方式</span>
+          <input name="website" type="url" maxlength="500" placeholder="https://example.com" />
+        </label>
+        <label>
+          留言
+          <textarea name="content" rows="7" maxlength="800" placeholder="写下你想说的话" required></textarea>
+        </label>
+        <div class="submit-actions">
+          <button class="primary-button" type="submit">提交审核</button>
+          <span class="character-count" id="guestbook-count">0 / 800</span>
+        </div>
+        <p class="form-status" id="guestbook-status" aria-live="polite"></p>
+      </form>
+
+      <div>
+        <div class="subsection-head">
+          <h2>公开留言</h2>
+          <button class="text-button" type="button" id="refresh-guestbook">刷新</button>
+        </div>
+        <div class="guestbook-messages" id="guestbook-messages" aria-live="polite">
+          <div class="empty-state"><p>正在读取留言……</p></div>
+        </div>
+      </div>
     </div>
   </section>
 </BaseLayout>
+
+<script>
+  const form = document.querySelector<HTMLFormElement>("#guestbook-form");
+  const status = document.querySelector<HTMLParagraphElement>("#guestbook-status");
+  const messages = document.querySelector<HTMLDivElement>("#guestbook-messages");
+  const refresh = document.querySelector<HTMLButtonElement>("#refresh-guestbook");
+  const content = form?.elements.namedItem("content") as HTMLTextAreaElement | null;
+  const count = document.querySelector<HTMLSpanElement>("#guestbook-count");
+  const startedAt = form?.elements.namedItem("startedAt") as HTMLInputElement | null;
+  if (startedAt) startedAt.value = String(Date.now());
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>'"]/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+    })[character] || character);
+  }
+
+  function formatDate(value: string) {
+    return new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric" }).format(new Date(value));
+  }
+
+  async function loadMessages() {
+    if (!messages) return;
+    try {
+      const response = await fetch("/api/guestbook", { headers: { accept: "application/json" } });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "读取失败");
+      messages.innerHTML = data.messages.length
+        ? data.messages.map((item: any) => `
+            <article class="message-card">
+              <div class="message-head">
+                <strong>${item.website ? `<a href="${encodeURI(item.website)}" rel="nofollow noreferrer">${escapeHtml(item.name)}</a>` : escapeHtml(item.name)}</strong>
+                <time datetime="${escapeHtml(item.createdAt)}">${formatDate(item.createdAt)}</time>
+              </div>
+              <p>${escapeHtml(item.content).replace(/\n/g, "<br>")}</p>
+            </article>`).join("")
+        : `<div class="empty-state"><h3>还没有公开留言</h3><p>可以成为第一位留言的人。</p></div>`;
+    } catch {
+      messages.innerHTML = `<div class="empty-state"><h3>暂时无法读取留言</h3><p>请稍后刷新重试。</p></div>`;
+    }
+  }
+
+  content?.addEventListener("input", () => {
+    if (count) count.textContent = `${content.value.length} / 800`;
+  });
+  refresh?.addEventListener("click", loadMessages);
+
+  form?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const button = form.querySelector<HTMLButtonElement>("button[type='submit']");
+    if (button) button.disabled = true;
+    if (status) status.textContent = "正在提交……";
+    const payload = Object.fromEntries(new FormData(form).entries());
+    try {
+      const response = await fetch("/api/guestbook", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(payload)
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "提交失败");
+      if (status) status.textContent = data.message;
+      form.reset();
+      if (startedAt) startedAt.value = String(Date.now());
+      if (count) count.textContent = "0 / 800";
+    } catch (error) {
+      if (status) status.textContent = error instanceof Error ? error.message : "提交失败，请稍后重试。";
+    } finally {
+      if (button) button.disabled = false;
+    }
+  });
+
+  loadMessages();
+</script>

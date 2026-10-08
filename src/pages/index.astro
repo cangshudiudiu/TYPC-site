@@ -1,5 +1,6 @@
 ---
 import EntryCard from "@/components/EntryCard.astro";
+import ContactNote from "@/components/ContactNote.astro";
 import BaseLayout from "@/layouts/BaseLayout.astro";
 import { latestEntries } from "@/lib/content";
 
@@ -8,8 +9,7 @@ const sections = [
   { href: "/blog/", title: "博客", text: "较完整的文章、观点和技术整理。" },
   { href: "/essays/", title: "随笔", text: "短想法、观察、记录和日常片段。" },
   { href: "/resources/", title: "资料", text: "文档索引、教程、研究材料和知识库入口。" },
-  { href: "/downloads/", title: "下载", text: "可直接获取的文件、模板、PDF 和资料包。" },
-  { href: "/submit/", title: "投稿", text: "外部文章和资料的提交入口，先进入审核流程。" }
+  { href: "/downloads/", title: "下载", text: "可直接获取的文件、模板、PDF 和资料包。" }
 ];
 
 const homeLatestEntries = latestEntries.filter((entry) => entry.section !== "bookmarks");
@@ -53,4 +53,6 @@ const homeLatestEntries = latestEntries.filter((entry) => entry.section !== "boo
       {homeLatestEntries.map((entry) => <EntryCard entry={entry} />)}
     </div>
   </section>
+
+  <ContactNote locale="zh" />
 </BaseLayout>

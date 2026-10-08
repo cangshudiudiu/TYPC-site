@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { resourcesEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Resources" description="Guides and reference material from Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Resources</p><h1>Resources</h1><p>Documentation, guides, research material and knowledge-base entries.</p></div></div>
+    <div class="list">
+      {resourcesEn.map((item) => (
+        <article class="list-item"><div class="meta">{item.date} · EN</div><h2><a href={item.url}>{item.title}</a></h2><p>{item.description}</p></article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

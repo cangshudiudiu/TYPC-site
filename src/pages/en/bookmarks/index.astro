@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { bookmarksEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Bookmarks" description="Useful links and tools collected by Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Bookmarks</p><h1>Bookmarks</h1><p>Links, tools and reading lists worth keeping.</p></div></div>
+    <div class="list">
+      {bookmarksEn.map((item) => (
+        <article class="list-item"><div class="meta">{item.date} · EN</div><h2><a href={item.url}>{item.title}</a></h2><p>{item.description}</p></article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

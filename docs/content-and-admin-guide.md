@@ -77,19 +77,11 @@ backend:
 
 ## 投稿系统计划
 
-建议分两期做：
+投稿与留言现已使用 Cloudflare D1：
 
-第一期：GitHub 审核流
+- `/guestbook/`：提交留言，审核通过后公开显示
+- `/submit/`：站内投稿，提交后进入待审核队列
+- `/review/`：使用管理员口令审核留言与投稿
+- 投稿通过后可复制 Markdown，再粘贴到 Decap CMS 完成正式发布
 
-- 开启 Decap CMS open authoring
-- 投稿进入 GitHub Pull Request
-- 站长审核合并后发布
-
-第二期：网页投稿表单
-
-- 新增 `/submit/` 投稿页面
-- 投稿先进入审核队列
-- 站长在后台审核
-- 审核通过后生成 Markdown 并同步 GitHub
-
-第二期需要 Cloudflare D1 或其他数据库，不建议一开始就做。
+管理员口令必须保存在 Cloudflare Worker Secret `ADMIN_TOKEN` 中，不能写入源码。生产数据库首次部署前需运行 `npm run db:migrate:remote`。

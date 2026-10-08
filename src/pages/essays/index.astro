@@ -22,7 +22,7 @@ import { essays } from "@/lib/content";
             <p>{essay.description}</p>
             {essay.tags?.length ? (
               <div class="tags">
-                {essay.tags.map((tag) => <a class="tag" href={`/tags/#${encodeURIComponent(tag)}`}>{tag}</a>)}
+                {essay.tags.map((tag) => <a class="tag" href={`/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>)}
               </div>
             ) : null}
           </div>

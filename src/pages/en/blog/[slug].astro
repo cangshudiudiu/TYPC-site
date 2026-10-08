@@ -1,0 +1,22 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = import.meta.glob("../../../content-en/blog/*.md", { eager: true });
+  const originals = import.meta.glob("../../../content/blog/*.md", { eager: true });
+  const originalSlugs = new Set(Object.keys(originals).map((path) => path.split("/").pop()?.replace(/\.md$/, "")));
+  return Object.entries(posts).filter(([, post]) => (post as any).frontmatter.status !== "archived").map(([path, post]) => ({
+    params: { slug: path.split("/").pop()?.replace(/\.md$/, "") }, props: { post, hasTranslation: originalSlugs.has(path.split("/").pop()?.replace(/\.md$/, "")) }
+  }));
+}
+
+const { post, hasTranslation } = Astro.props;
+const { Content, frontmatter } = post;
+---
+
+<BaseLayout locale="en" title={frontmatter.title} description={frontmatter.description} showLanguageSwitch={hasTranslation}>
+  <article class="article">
+    <header><p class="eyebrow">Blog</p><h1>{frontmatter.title}</h1><p class="lead">{frontmatter.description}</p><p class="meta">{frontmatter.date} · EN</p></header>
+    <div class="article-content"><Content /></div>
+  </article>
+</BaseLayout>

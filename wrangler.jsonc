@@ -6,6 +6,19 @@
     "enabled": true
   },
   "main": "dist/_worker.js/index.js",
+  "secrets": {
+    "required": [
+      "ADMIN_TOKEN"
+    ]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "typc-site-content",
+      "database_id": "replace-after-running-wrangler-d1-create",
+      "migrations_dir": "migrations"
+    }
+  ],
   "compatibility_flags": [
     "global_fetch_strictly_public",
     "nodejs_compat"

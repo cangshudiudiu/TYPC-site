@@ -1,0 +1,15 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { downloadsEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Downloads" description="Files and downloadable material from Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Downloads</p><h1>Downloads</h1><p>Files, templates, PDFs and resource packs.</p></div></div>
+    <div class="list">
+      {downloadsEn.map((item) => (
+        <article class="list-item"><div class="meta">{item.date} · EN</div><h2><a href={item.url}>{item.title}</a></h2><p>{item.description}</p></article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

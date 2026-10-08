@@ -1,0 +1,45 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { allEntriesEn } from "@/lib/content-en";
+
+const searchEntries = allEntriesEn.map(({ title, description, date, tags, url, sectionLabel }) => ({
+  title, description, date, tags: tags ?? [], url, sectionLabel
+}));
+---
+
+<BaseLayout locale="en" title="Search" description="Search articles, research, notes and resources in Cangshu Journal.">
+  <section class="container search-page">
+    <div class="section-head"><div><p class="eyebrow">Search</p><h1>Search</h1><p>Search by title, summary, section or tag.</p></div></div>
+    <label class="search-box"><span class="sr-only">Search the site</span><input id="site-search" type="search" placeholder="Try AI, research, tools…" autocomplete="off" /></label>
+    <p class="search-summary" id="search-summary" aria-live="polite">{searchEntries.length} entries</p>
+    <div class="list" id="search-results"></div>
+    <script type="application/json" id="search-data" set:html={JSON.stringify(searchEntries).replace(/</g, "\\u003c")}></script>
+  </section>
+</BaseLayout>
+
+<script>
+  const input = document.querySelector<HTMLInputElement>("#site-search");
+  const results = document.querySelector<HTMLDivElement>("#search-results");
+  const summary = document.querySelector<HTMLParagraphElement>("#search-summary");
+  const dataElement = document.querySelector<HTMLScriptElement>("#search-data");
+  const entries = JSON.parse(dataElement?.textContent || "[]");
+  const initialQuery = new URLSearchParams(window.location.search).get("q") || "";
+  if (input) input.value = initialQuery;
+
+  function escapeHtml(value: string) {
+    return value.replace(/[&<>'"]/g, (character) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character] || character);
+  }
+
+  function render() {
+    const query = (input?.value || "").trim().toLowerCase();
+    const filtered = entries.filter((entry: any) => !query || [entry.title, entry.description, entry.sectionLabel, ...(entry.tags || [])].join(" ").toLowerCase().includes(query));
+    if (summary) summary.textContent = query ? `${filtered.length} matching entries` : `${filtered.length} entries`;
+    if (!results) return;
+    results.innerHTML = filtered.length
+      ? filtered.map((entry: any) => `<article class="list-item"><div class="meta">${escapeHtml(entry.sectionLabel)} · ${escapeHtml(entry.date)}</div><h2><a href="${encodeURI(entry.url)}">${escapeHtml(entry.title)}</a></h2><p>${escapeHtml(entry.description)}</p>${entry.tags?.length ? `<div class="tags">${entry.tags.map((tag: string) => `<span class="tag">${escapeHtml(tag)}</span>`).join("")}</div>` : ""}</article>`).join("")
+      : `<div class="empty-state"><h2>No results</h2><p>Try a shorter keyword, section name or tag.</p></div>`;
+  }
+
+  input?.addEventListener("input", render);
+  render();
+</script>

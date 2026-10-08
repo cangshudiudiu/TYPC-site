@@ -1,0 +1,47 @@
+---
+import ContactNote from "@/components/ContactNote.astro";
+import EntryCard from "@/components/EntryCard.astro";
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { latestEntriesEn } from "@/lib/content-en";
+
+const sections = [
+  { href: "/en/research/", title: "Research", text: "Research articles, project notes, PDFs, data, code and supplementary materials." },
+  { href: "/en/blog/", title: "Blog", text: "Longer articles, opinions and technical notes." },
+  { href: "/en/essays/", title: "Notes", text: "Short thoughts, observations and fragments from everyday life." },
+  { href: "/en/resources/", title: "Resources", text: "Documentation, guides, research material and knowledge-base entries." },
+  { href: "/en/downloads/", title: "Downloads", text: "Files, templates, PDFs and resource packs available to download." }
+];
+
+const homeLatestEntries = latestEntriesEn.filter((entry) => entry.section !== "bookmarks");
+---
+
+<BaseLayout locale="en">
+  <section class="container hero">
+    <div>
+      <p class="eyebrow">Personal research journal</p>
+      <h1>Cangshu Journal</h1>
+      <p class="lead">A quiet personal journal for research, essays, notes, useful resources and downloadable materials.</p>
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="section-head"><div><h2>Sections</h2></div></div>
+    <div class="grid section-grid">
+      {sections.map((section) => (
+        <article class="card section-card">
+          <h3><a href={section.href}>{section.title}</a></h3>
+          <p>{section.text}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="section-head">
+      <div><h2>Latest updates</h2><p>New content from every section, collected in one place.</p></div>
+    </div>
+    <div class="grid">{homeLatestEntries.map((entry) => <EntryCard entry={entry} />)}</div>
+  </section>
+
+  <ContactNote locale="en" />
+</BaseLayout>

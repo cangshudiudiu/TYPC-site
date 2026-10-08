@@ -3,17 +3,19 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
 
 export async function getStaticPaths() {
   const resources = import.meta.glob("../../content/resources/*.md", { eager: true });
+  const translations = import.meta.glob("../../content-en/resources/*.md", { eager: true });
+  const translatedSlugs = new Set(Object.keys(translations).map((path) => path.split("/").pop()?.replace(/\.md$/, "")));
   return Object.entries(resources).filter(([, resource]) => (resource as any).frontmatter.status !== "archived").map(([path, resource]) => ({
     params: { slug: path.split("/").pop()?.replace(/\.md$/, "") },
-    props: { resource }
+    props: { resource, hasTranslation: translatedSlugs.has(path.split("/").pop()?.replace(/\.md$/, "")) }
   }));
 }
 
-const { resource } = Astro.props;
+const { resource, hasTranslation } = Astro.props;
 const { Content, frontmatter } = resource;
 ---
 
-<BaseLayout title={frontmatter.title} description={frontmatter.description}>
+<BaseLayout title={frontmatter.title} description={frontmatter.description} showLanguageSwitch={hasTranslation}>
   <article class="article">
     <header>
       <p class="eyebrow">资料</p>

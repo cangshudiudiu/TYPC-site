@@ -1,0 +1,23 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { essaysEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Notes" description="Short notes from Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Notes</p><h1>Notes</h1><p>Short thoughts, observations and fragments from everyday life.</p></div></div>
+    <div class="timeline">
+      {essaysEn.map((essay) => (
+        <article class="moment">
+          <div class="moment-dot" aria-hidden="true"></div>
+          <div>
+            <div class="meta">{essay.date} · EN</div>
+            <h2><a href={essay.url}>{essay.title}</a></h2>
+            <p>{essay.description}</p>
+            {essay.tags?.length ? <div class="tags">{essay.tags.map((tag) => <a class="tag" href={`/en/search/?q=${encodeURIComponent(tag)}`}>{tag}</a>)}</div> : null}
+          </div>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

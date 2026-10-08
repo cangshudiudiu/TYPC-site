@@ -1,0 +1,179 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+---
+
+<BaseLayout title="站内审核台" description="藏书小刊留言与投稿审核。" noindex={true} showLanguageSwitch={false}>
+  <section class="container review-page">
+    <div class="section-head">
+      <div>
+        <p class="eyebrow">Moderation</p>
+        <h1>站内审核台</h1>
+        <p>审核留言与投稿。管理员口令只保存在当前浏览器标签页中。</p>
+      </div>
+    </div>
+
+    <form class="review-login" id="review-login">
+      <label>
+        管理员口令
+        <input name="token" type="password" autocomplete="off" required />
+      </label>
+      <button class="primary-button" type="submit">进入审核台</button>
+      <p class="form-status" id="review-login-message" aria-live="polite"></p>
+    </form>
+
+    <div class="review-workspace" id="review-workspace" hidden>
+      <div class="review-toolbar">
+        <div class="segmented" aria-label="审核类型">
+          <button type="button" data-type="guestbook" aria-pressed="true">留言</button>
+          <button type="button" data-type="submissions" aria-pressed="false">投稿</button>
+        </div>
+        <label>
+          <span class="sr-only">审核状态</span>
+          <select id="review-status">
+            <option value="pending">待审核</option>
+            <option value="approved">已通过</option>
+            <option value="rejected">已拒绝</option>
+          </select>
+        </label>
+        <button class="text-button" type="button" id="review-logout">退出</button>
+      </div>
+      <p class="form-status" id="review-message" aria-live="polite"></p>
+      <div class="review-list" id="review-list"></div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  const login = document.querySelector<HTMLFormElement>("#review-login");
+  const workspace = document.querySelector<HTMLDivElement>("#review-workspace");
+  const list = document.querySelector<HTMLDivElement>("#review-list");
+  const message = document.querySelector<HTMLParagraphElement>("#review-message");
+  const loginMessage = document.querySelector<HTMLParagraphElement>("#review-login-message");
+  const statusSelect = document.querySelector<HTMLSelectElement>("#review-status");
+  const logout = document.querySelector<HTMLButtonElement>("#review-logout");
+  const typeButtons = [...document.querySelectorAll<HTMLButtonElement>("[data-type]")];
+  let currentType = "guestbook";
+  let itemsById = new Map<string, any>();
+
+  function escapeHtml(value: unknown) {
+    return String(value ?? "").replace(/[&<>'"]/g, (character) => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;"
+    })[character] || character);
+  }
+
+  function token() {
+    return sessionStorage.getItem("typc-admin-token") || "";
+  }
+
+  function itemHtml(item: any) {
+    if (currentType === "guestbook") {
+      return `<article class="review-card" data-id="${escapeHtml(item.id)}">
+        <div class="review-card-head"><strong>${escapeHtml(item.name)}</strong><time>${escapeHtml(item.createdAt)}</time></div>
+        ${item.website ? `<p><a href="${encodeURI(item.website)}" target="_blank" rel="noreferrer">${escapeHtml(item.website)}</a></p>` : ""}
+        <p class="review-content">${escapeHtml(item.content).replace(/\n/g, "<br>")}</p>
+        ${actionsHtml(item.status)}
+      </article>`;
+    }
+    return `<article class="review-card" data-id="${escapeHtml(item.id)}">
+      <div class="review-card-head"><strong>${escapeHtml(item.title)}</strong><time>${escapeHtml(item.createdAt)}</time></div>
+      <dl class="review-meta">
+        <div><dt>栏目</dt><dd>${escapeHtml(item.section)}</dd></div>
+        <div><dt>作者</dt><dd>${escapeHtml(item.author)}</dd></div>
+        <div><dt>联系方式</dt><dd>${escapeHtml(item.contact || "未填写")}</dd></div>
+        <div><dt>标签</dt><dd>${escapeHtml(item.tags || "无")}</dd></div>
+      </dl>
+      <p><strong>摘要：</strong>${escapeHtml(item.description)}</p>
+      ${item.sourceUrl ? `<p><strong>链接：</strong><a href="${encodeURI(item.sourceUrl)}" target="_blank" rel="noreferrer">${escapeHtml(item.sourceUrl)}</a></p>` : ""}
+      ${item.attachments ? `<details><summary>附件说明</summary><pre>${escapeHtml(item.attachments)}</pre></details>` : ""}
+      <details open><summary>正文</summary><pre>${escapeHtml(item.content)}</pre></details>
+      <button class="text-button copy-submission" type="button" data-copy="true">复制 Markdown 稿件</button>
+      ${actionsHtml(item.status)}
+    </article>`;
+  }
+
+  function actionsHtml(status: string) {
+    if (status === "pending") return `<div class="review-actions"><button type="button" data-action="approved">通过</button><button class="danger-button" type="button" data-action="rejected">拒绝</button></div>`;
+    return `<div class="review-actions"><button type="button" data-action="pending">移回待审核</button>${status !== "approved" ? `<button type="button" data-action="approved">通过</button>` : ""}</div>`;
+  }
+
+  function submissionMarkdown(item: any) {
+    const tags = String(item.tags || "").split(/[,，]/).map((tag) => tag.trim()).filter(Boolean);
+    const quote = (value: unknown) => `"${String(value ?? "").replaceAll("\\", "\\\\").replaceAll('"', '\\"')}"`;
+    return `---\ntitle: ${quote(item.title)}\ndescription: ${quote(item.description)}\ndate: "${new Date().toISOString().slice(0, 10)}"\nstatus: "archived"\nfeatured: false\nlanguage: "${item.language || "zh"}"\ntags: [${tags.map(quote).join(", ")}]\n---\n\n${item.content}`;
+  }
+
+  async function loadQueue() {
+    if (!list || !message) return;
+    message.textContent = "正在读取……";
+    try {
+      const response = await fetch(`/api/admin/queue?type=${currentType}&status=${statusSelect?.value || "pending"}`, {
+        headers: { authorization: `Bearer ${token()}` }
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "读取失败");
+      itemsById = new Map(data.items.map((item: any) => [item.id, item]));
+      if (login) login.hidden = true;
+      if (workspace) workspace.hidden = false;
+      if (loginMessage) loginMessage.textContent = "";
+      message.textContent = `共 ${data.items.length} 条记录`;
+      list.innerHTML = data.items.length ? data.items.map(itemHtml).join("") : `<div class="empty-state"><h2>这里暂时是空的</h2><p>当前状态下没有记录。</p></div>`;
+    } catch (error) {
+      const errorText = error instanceof Error ? error.message : "读取失败。";
+      message.textContent = errorText;
+      if (loginMessage) loginMessage.textContent = errorText;
+      if (login) login.hidden = false;
+      if (workspace) workspace.hidden = true;
+    }
+  }
+
+  login?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    const value = new FormData(login).get("token");
+    sessionStorage.setItem("typc-admin-token", String(value || ""));
+    await loadQueue();
+  });
+
+  typeButtons.forEach((button) => button.addEventListener("click", () => {
+    currentType = button.dataset.type || "guestbook";
+    typeButtons.forEach((item) => item.setAttribute("aria-pressed", String(item === button)));
+    loadQueue();
+  }));
+  statusSelect?.addEventListener("change", loadQueue);
+  logout?.addEventListener("click", () => {
+    sessionStorage.removeItem("typc-admin-token");
+    if (login) login.hidden = false;
+    if (workspace) workspace.hidden = true;
+  });
+
+  list?.addEventListener("click", async (event) => {
+    const copyButton = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-copy]");
+    const copyCard = copyButton?.closest<HTMLElement>("[data-id]");
+    if (copyButton && copyCard && message) {
+      const item = itemsById.get(copyCard.dataset.id || "");
+      if (item) {
+        await navigator.clipboard.writeText(submissionMarkdown(item));
+        message.textContent = "已复制 Markdown 稿件，可以粘贴到内容后台继续编辑。";
+      }
+      return;
+    }
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>("button[data-action]");
+    const card = button?.closest<HTMLElement>("[data-id]");
+    if (!button || !card || !message) return;
+    button.disabled = true;
+    try {
+      const response = await fetch(`/api/admin/${currentType}/${card.dataset.id}`, {
+        method: "PATCH",
+        headers: { authorization: `Bearer ${token()}`, "content-type": "application/json" },
+        body: JSON.stringify({ status: button.dataset.action })
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || "操作失败");
+      await loadQueue();
+    } catch (error) {
+      message.textContent = error instanceof Error ? error.message : "操作失败。";
+      button.disabled = false;
+    }
+  });
+
+  if (token()) loadQueue();
+</script>

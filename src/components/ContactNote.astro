@@ -1,0 +1,39 @@
+---
+type Props = { locale?: "zh" | "en" };
+const { locale = "zh" } = Astro.props;
+const copy = locale === "en"
+  ? {
+      summary: "Looking for pen pals — get in touch",
+      text: "If you enjoy reading, writing, or simply want to talk about everyday life, feel free to send me an email.",
+      prompt: "Open the line above to view the email address."
+    }
+  : {
+      summary: "找笔友，欢迎联系",
+      text: "如果你也喜欢阅读、写作，或者只是想聊聊近来的生活，可以给我写信：",
+      prompt: "点击上方文字查看联系方式。"
+    };
+---
+
+<section class="container contact-section">
+  <details class="contact-note" data-pen-pal-contact>
+    <summary>{copy.summary}</summary>
+    <p>{copy.text}</p>
+    <p class="contact-address" aria-live="polite">{copy.prompt}</p>
+  </details>
+</section>
+
+<script>
+  document.querySelectorAll<HTMLDetailsElement>("[data-pen-pal-contact]").forEach((contact) => {
+    const address = contact.querySelector<HTMLParagraphElement>(".contact-address");
+    contact.addEventListener("toggle", () => {
+      if (!contact.open || !address || address.querySelector("a")) return;
+      const mailbox = ["uquk202268", "gmail", "com"];
+      const email = `${mailbox[0]}@${mailbox[1]}.${mailbox[2]}`;
+      const link = document.createElement("a");
+      link.href = `mailto:${email}`;
+      link.textContent = email;
+      address.textContent = "";
+      address.append(link);
+    });
+  });
+</script>

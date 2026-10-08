@@ -1,0 +1,19 @@
+---
+import BaseLayout from "@/layouts/BaseLayout.astro";
+import { blogPostsEn } from "@/lib/content-en";
+---
+
+<BaseLayout locale="en" title="Blog" description="Articles and technical notes from Cangshu Journal.">
+  <section class="container">
+    <div class="section-head"><div><p class="eyebrow">Blog</p><h1>Blog</h1><p>Longer articles, opinions and technical notes.</p></div></div>
+    <div class="list">
+      {blogPostsEn.map((post) => (
+        <article class="list-item">
+          <div class="meta">{post.date} · EN</div>
+          <h2><a href={post.url}>{post.title}</a></h2>
+          <p>{post.description}</p>
+        </article>
+      ))}
+    </div>
+  </section>
+</BaseLayout>

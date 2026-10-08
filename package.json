@@ -5,10 +5,13 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "dev:worker": "npm run build && wrangler dev --local",
     "build": "astro build && node scripts/create-worker-entry.mjs",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
-    "cf-typegen": "wrangler types"
+    "cf-typegen": "wrangler types",
+    "db:migrate:local": "wrangler d1 migrations apply typc-site-content --local",
+    "db:migrate:remote": "wrangler d1 migrations apply typc-site-content --remote"
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.3.1",
